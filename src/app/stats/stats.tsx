@@ -20,6 +20,11 @@ export default async function getStats(): Promise<RepoStats> {
   for (const item of json_res as { name: string; stat: any[] }[]) {
     // @ts-ignore
     repo_stats[item.name] = item.stat;
+
+    if (typeof window === "undefined") {
+      continue;
+    }
+
     const sql = compile(`${rawPrql}\nrelation_to_json(${item.name})`, opts);
     if (sql === undefined) {
       throw Error(`Failed to compile PRQL for ${item.name}`);
